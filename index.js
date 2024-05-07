@@ -10,7 +10,9 @@ const port = process.env.PORT || 5000;
 
 // middleware 
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174'],
+    origin: [
+        'https://car-service-client-a4480.web.app',
+         'https://car-service-client-a4480.firebaseapp.com'],
     credentials: true
 }))
 
@@ -78,7 +80,7 @@ const verifyToken = async (req, res, next) => {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
         const serviceCollection = client.db('carDoctor').collection("services")
         const bookingsCollection = client.db('carDoctor').collection("bookings")
         // auth related api
@@ -90,7 +92,8 @@ async function run() {
             res
                 .cookie('token', token, {
                     httpOnly: true,
-                    secure: false,
+                    secure: process.env.NODE_ENV === 'production', 
+                    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
                 })
                 .send({ success: true })
         })
@@ -165,7 +168,7 @@ async function run() {
 
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
