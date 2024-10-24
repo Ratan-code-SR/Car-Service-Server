@@ -35,7 +35,7 @@ async function run() {
             res.send(result)
         })
         app.get("/bookings", async (req, res) => {
-            const cursor = serviceCollection.find();
+            const cursor = bookingsCollection.find();
             const result = await cursor.toArray();
             res.send(result)
         })
